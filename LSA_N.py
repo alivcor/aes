@@ -47,6 +47,7 @@ class Essay:
 
 
 count = 0
+nj = 1
 esslist = []
 # ess3txt = ""
 f = open('Dataset/Set1Complete.csv', 'rb')
