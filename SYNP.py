@@ -12,7 +12,6 @@ import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 import numpy as np
-from sklearn.decomposition import TruncatedSVD
 from sklearn.random_projection import sparse_random_matrix
 from scipy import spatial
 from nltk import word_tokenize, pos_tag
