@@ -54,6 +54,7 @@ def extract_ideas(t, inp, ivp):
             for child in t:
                 npw_ = str(child[0])
                 print "npw_" + npw_
+                #TODO : HERE, ADD ONLY Nouns and adjective
                 if child[0] == "NP" or child[0] == "JJ" or child._label == "NNS":
                     temp.append(npw_)
             inp.append(temp)
