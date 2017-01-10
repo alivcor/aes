@@ -26,20 +26,37 @@ pos = pos_tag(word)
 print(pos)
 grammar = "NP: {<IN>?<IN>?<RB>?<DT>?<JJ>*<NN>}"
 grammar = """
-	NP:   {<IN>?<IN>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+}
+	NP:   {<IN>?<IN>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+<IN>?<JJ>?<NN>?}
 	CP:   {<JJR|JJS>}
-	VERB: {<VB.*>}
-	THAN: {<IN>}
+	VP: {<VB.*>}
 	COMP: {<DT>?<NP><RB>?<VERB><DT>?<CP><THAN><DT>?<NP>}
 	"""
 ncount = 0;
 vcount = 0;
 
+def extract_ideas(t):
+    try:
+        t.label
+    except AttributeError:
+        return
+    else:
+        if t._label == "NP":
+            print "t._label : " + t._label
+            print "t[0] : " + str(t[0])
+            for child in t:
+                print str(child[0])
+        if t._label == "VP":
+            print "t_label : " + t._label
+            print "t[0] : " + str(t[0])
+            for child in t:
+                print str(child[0])
+        for child in t:
+            extract_ideas(child)
+
 
 #TODO : Detect variations in tense.
 sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
 sents = sent_detector.tokenize(esstxt.strip())
-
 for sent in sents:
     words = word_tokenize(sent)
     tagged_words = pos_tag(words)
@@ -47,7 +64,11 @@ for sent in sents:
     result = cp.parse(tagged_words)
     print result
     print "\n"
+    print type(result)
+    print "~~~~~~~~~~"
+    extract_ideas(result)
     result.draw()
+    break
 
 #(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)
 # pf = open('pos_tags.txt', 'w')
