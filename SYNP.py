@@ -6,7 +6,7 @@
 # perfect essays : 37, 118, 147,
 import csv
 import sys
-from nltk.corpus import stopwords
+import nltk
 import numpy
 import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -15,15 +15,41 @@ import numpy as np
 from sklearn.random_projection import sparse_random_matrix
 from scipy import spatial
 from nltk import word_tokenize, pos_tag
+import re
 
 esstxt = "@ORGANIZATION1, Computers are great tools and a great piece of modern technology. Almost every family has them. About @PERCENT1 of my class has computers. So many people have them because their helpful and another current learning resource. Also it's a gr"
+
+esstxt = re.sub(r'(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)', " ", esstxt)
 
 word = word_tokenize(esstxt)
 pos = pos_tag(word)
 print(pos)
+grammar = "NP: {<IN>?<IN>?<RB>?<DT>?<JJ>*<NN>}"
+grammar = """
+	NP:   {<IN>?<IN>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+}
+	CP:   {<JJR|JJS>}
+	VERB: {<VB.*>}
+	THAN: {<IN>}
+	COMP: {<DT>?<NP><RB>?<VERB><DT>?<CP><THAN><DT>?<NP>}
+	"""
 ncount = 0;
 vcount = 0;
-#
+
+
+#TODO : Detect variations in tense.
+sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+sents = sent_detector.tokenize(esstxt.strip())
+
+for sent in sents:
+    words = word_tokenize(sent)
+    tagged_words = pos_tag(words)
+    cp = nltk.RegexpParser(grammar)
+    result = cp.parse(tagged_words)
+    print result
+    print "\n"
+    result.draw()
+
+#(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)
 # pf = open('pos_tags.txt', 'w')
 # for i in range(0, len(pos)):
 #     pf.write(str(pos[i]) + '\n')
