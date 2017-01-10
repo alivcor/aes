@@ -34,7 +34,12 @@ grammar = """
 ncount = 0;
 vcount = 0;
 
-def extract_ideas(t):
+global ideas_np
+global ideas_vp
+
+ideas_np = []
+ideas_vp = []
+def extract_ideas(t, inp, ivp):
     try:
         t.label
     except AttributeError:
@@ -43,15 +48,24 @@ def extract_ideas(t):
         if t._label == "NP":
             print "t._label : " + t._label
             print "t[0] : " + str(t[0])
+            temp = []
             for child in t:
-                print str(child[0])
+                npw_ = str(child[0])
+                print npw_
+                temp.append(npw_)
+            inp.append(temp)
         if t._label == "VP":
             print "t_label : " + t._label
             print "t[0] : " + str(t[0])
+            temp = []
             for child in t:
-                print str(child[0])
+                vpw_ = str(child[0])
+                print vpw_
+                temp.append(vpw_)
+            ivp.append(temp)
         for child in t:
-            extract_ideas(child)
+            extract_ideas(child, inp, ivp)
+    return [inp, ivp]
 
 
 #TODO : Detect variations in tense.
@@ -66,9 +80,16 @@ for sent in sents:
     print "\n"
     print type(result)
     print "~~~~~~~~~~"
-    extract_ideas(result)
+    inp = []
+    ivp = []
+    inp, ivp = extract_ideas(result, inp, ivp)
+    ideas_np.append(inp)
+    ideas_vp.append(ivp)
     result.draw()
-    break
+
+print ideas_np
+print ideas_vp
+
 
 #(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)
 # pf = open('pos_tags.txt', 'w')
