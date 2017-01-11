@@ -30,7 +30,7 @@ grammar = """
 	NP:   {<IN>?<IN>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+<IN>?<JJ>?<NN>?<CC>?<NN>?}
 	CP:   {<JJR|JJS>}
 	VP: {<VB.*>}
-	COMP: {<DT>?<NP><RB>?<VERB><DT>?<CP><THAN><DT>?<NP>}
+	COMP: {<DT>?<NP><RB>?<VP><DT>?<CP><THAN><DT>?<NP>}
 	"""
 ncount = 0;
 vcount = 0;
@@ -53,10 +53,14 @@ def extract_ideas(t, inp, ivp):
             temp = []
             for child in t:
                 npw_ = str(child[0])
-                print "npw_" + npw_
+                npt_ = str(child[1])
+                # print "npw_ : " + npw_
+                # print "child[1] : " + str(child[1])
                 #TODO : HERE, ADD ONLY Nouns and adjective
-                if child[0] == "NP" or child[0] == "JJ" or child._label == "NNS":
+                if npt_ == "NP" or npt_ == "JJ" or npt_ == "NNS" or npt_ == "NN":
                     temp.append(npw_)
+                else:
+                    print "Not appending " + npw_ + "because it is a " + npt_
             inp.append(temp)
         if t._label == "VP":
             # print "t_label : " + t._label
@@ -99,13 +103,20 @@ print ideas_vp
 
 print "Author presents the following key ideas: \n"
 
+key_ideas = []
+
 for nps in ideas_np:
     for nptuples in nps:
-        print "-",
-        for wnps in nptuples:
-            print wnps,
-    print "\n"
-
+        # print "-",
+        # for wnps in nptuples:
+        #     # print wnps
+        for nptuple in nptuples:
+            # nptxt = "".join(str(r) for v in nptuples for r in v)
+            nptxt = "".join(nptuple)
+            if not nptxt in key_ideas and not len(nptuple) == 0:
+                key_ideas.append(nptxt.lower())
+    # print "\n"
+print " ".join(key_ideas)
 
 #(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)
 # pf = open('pos_tags.txt', 'w')
