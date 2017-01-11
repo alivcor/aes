@@ -26,173 +26,94 @@ transformer = TfidfTransformer(smooth_idf=False)
 # word = word_tokenize(esstxt)
 # pos = pos_tag(word)
 # print(pos)
+global grammar
+
 grammar = "NP: {<IN>?<IN>?<RB>?<DT>?<JJ>*<NN>}"
 grammar = """
-	NP:   {<IN>?<IN>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+<IN>?<JJ>?<NN>?<CC>?<NN>?}
-	np:
+	NP:   {<WRB>?<MD>?<PRP>?<IN>?<IN>?<WRB>?<RB>?<DT>?<PRP>?<JJ.*>*<NN.*>+<IN>?<JJ>?<NN>?<CC>?<NN>?}
 	CP:   {<JJR|JJS>}
 	VP: {<VB.*>}
+	NP: {<PRP><MD>}
+	NP: {<DT>}
+	NP: {<WP>}
 	COMP: {<DT>?<NP><RB>?<VP><DT>?<CP><THAN><DT>?<NP>}
 	"""
+
 ncount = 0;
 vcount = 0;
 
-global ideas_np
-global ideas_vp
+global nVPflag
+global nNPflag
 
+nNPflag = True
+nVPflag = True
 
-def extract_ideas(t, inp, ivp):
+def check_flags(t, nNPflag, nVPflag):
     try:
         t.label
     except AttributeError:
-        return
+        return [nNPflag, nVPflag]
     else:
         if t._label == "NP":
-            temp = []
-            for child in t:
-                npw_ = str(child[0])
-                npt_ = str(child[1])
-                #TODO : HERE, ADD ONLY Nouns and adjective
-                if npt_ == "NP" or npt_ == "JJ" or npt_ == "NNS" or npt_ == "NN":
-                    temp.append(npw_)
-            inp.append(temp)
+            nNPflag = False
         if t._label == "VP":
-            temp = []
-            for child in t:
-                vpw_ = str(child[0])
-                # print vpw_
-                temp.append(vpw_)
-            ivp.append(temp)
+            nVPflag = False
         for child in t:
-            extract_ideas(child, inp, ivp)
-    return [inp, ivp]
+            flags = check_flags(child, nNPflag, nVPflag)
+            nNPflag = flags[0]
+            nVPflag = flags[1]
+    return [nNPflag, nVPflag]
 
-
-#TODO : Detect variations in tense.
-def get_ideas_unigram(esstxt):
-    ideas_np = []
-    ideas_vp = []
-
+def get_type1_errors(esstxt):
+    'Incomplete sentence'
     esstxt = re.sub(r'(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)', " ", esstxt)
 
     sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
     sents = sent_detector.tokenize(esstxt.strip())
 
+    n_err = 0
     for sent in sents:
         words = word_tokenize(sent)
         tagged_words = pos_tag(words)
         cp = nltk.RegexpParser(grammar)
         result = cp.parse(tagged_words)
-        inp = []
-        ivp = []
-        inp, ivp = extract_ideas(result, inp, ivp)
-        ideas_np.append(inp)
-        ideas_vp.append(ivp)
+        # result.draw()
+        flags = check_flags(result, True, True)
+        if flags[0]:
+            print "NO NP FOUND : ",
+            print sent
+            n_err += 1
+            # result.draw()
+        if flags[1]:
+            print "NO VP FOUND : ",
+            print sent
+            n_err += 1
+            # result.draw()
+    return n_err
 
-    # print "Author presents the following key ideas: \n"
+def get_syntax_errors(esstxt):
+    nt1 = get_type1_errors(esstxt)
+    return nt1
 
-    key_ideas = []
-
-    for nps in ideas_np:
-        for nptuples in nps:
-            for nptuple in nptuples:
-                # nptxt = "".join(str(r) for v in nptuples for r in v)
-                nptxt = "".join(nptuple)
-                if not nptxt in key_ideas and not len(nptuple)==0:
-                    key_ideas.append(nptxt.lower())
-
-    return " ".join(key_ideas)
-
-
-def get_ideas_bigram(esstxt):
-    ideas_np = []
-    ideas_vp = []
-
-    esstxt = re.sub(r'(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)', " ", esstxt)
-
-    sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
-    sents = sent_detector.tokenize(esstxt.strip())
-
-    for sent in sents:
-        words = word_tokenize(sent)
-        tagged_words = pos_tag(words)
-        cp = nltk.RegexpParser(grammar)
-        result = cp.parse(tagged_words)
-        inp = []
-        ivp = []
-        inp, ivp = extract_ideas(result, inp, ivp)
-        ideas_np.append(inp)
-        ideas_vp.append(ivp)
-
-    # print "Author presents the following key ideas: \n"
-
-    key_ideas = []
-
-    for nps in ideas_np:
-        for nptuples in nps:
-            nptxt = "".join(str(r) for v in nptuples for r in v)
-            if not nptxt in key_ideas and len(nptuples)!=0:
-                key_ideas.append(nptxt.lower())
-
-    return " ".join(key_ideas)
-
-test_k_ideas_unigram = get_ideas_unigram(test_essay)
-test_k_ideas_bigram = get_ideas_bigram(test_essay)
-csim_LARG = 0
-
-csim_iLARG = 0
-
-sim_ess_txt = ""
 
 f = open('Dataset/Set1Complete.csv', 'rb')
 count = 0
 try:
     reader = csv.reader(f)
     for row in reader:
-        if count > 0 and count <= 1500:
+        if count > 0 and count <= 20:
             ess_id = int(row[0])
             ess_set = int(row[1])
             ess_text = unicode(row[2], errors='ignore')
             ess_score_r1 = float(row[3])
             ess_score_r2 = float(row[4])
             ess_score = ess_score_r1 + ess_score_r2
-            #UNIGRAM
-            esstxts = []
-            esstxts.append(test_k_ideas_unigram)
-            esstxts.append(get_ideas_unigram(ess_text))
-            vectorizer = TfidfVectorizer(max_features=10000,
-                                         min_df=0.5, stop_words='english',
-                                         use_idf=True)
-            X = vectorizer.fit_transform(esstxts)
-            tfidf = X.toarray()
-            csim_unigram = 1 - spatial.distance.cosine(tfidf[1], tfidf[0])
-
-            #BIGRAM
-            esstxts = []
-            esstxts.append(test_k_ideas_bigram)
-            esstxts.append(get_ideas_bigram(ess_text))
-            vectorizer = TfidfVectorizer(max_features=10000,
-                                         min_df=0.5, stop_words='english',
-                                         use_idf=True)
-            X = vectorizer.fit_transform(esstxts)
-            tfidf = X.toarray()
-            csim_bigram = 1 - spatial.distance.cosine(tfidf[1], tfidf[0])
-
-            csim = csim_unigram + csim_bigram
-
-            if csim > csim_LARG and csim < 1:
-                csim_LARG = csim
-                csim_iLARG = ess_id
-                sim_ess_txt = ess_text
-                sim_ess_score = ess_score
-            print count, csim
+            syn_errors = get_syntax_errors(ess_text)
+            print count, syn_errors
             count += 1
         else:
             count += 1
 finally:
     f.close()
 
-print "The ideas of this text are most similar to essay id " + str(csim_iLARG) + ": \n"
-print sim_ess_txt
 
-print "This essay could be assigned a score of : " + str(sim_ess_score)
