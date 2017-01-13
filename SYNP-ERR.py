@@ -101,7 +101,7 @@ count = 0
 try:
     reader = csv.reader(f)
     for row in reader:
-        if count > 0 and count <= 20:
+        if count > 0 and count <= 100:
             ess_id = int(row[0])
             ess_set = int(row[1])
             ess_text = unicode(row[2], errors='ignore')
