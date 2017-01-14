@@ -48,6 +48,10 @@ global nNPflag
 nNPflag = True
 nVPflag = True
 
+
+def get_type2_errors(esstxt):
+    pass
+
 def check_flags(t, nNPflag, nVPflag):
     try:
         t.label
