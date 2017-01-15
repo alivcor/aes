@@ -50,6 +50,7 @@ nVPflag = True
 
 
 def get_type2_errors(esstxt):
+    #TODO: Define type 2 errors here
     pass
 
 def check_flags(t, nNPflag, nVPflag):
