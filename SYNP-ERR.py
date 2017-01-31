@@ -8,6 +8,8 @@ import csv
 import sys
 import nltk
 import numpy
+from enchant.checker import SpellChecker
+import enchant
 import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -51,7 +53,20 @@ nVPflag = True
 
 def get_type2_errors(esstxt):
     #TODO: Define type 2 errors here
-    pass
+    esstxt = re.sub(r'(\@)([A-Za-z]*)([\W]*[\d]*[\W]*)(\s)', " ", esstxt)
+    sdict = enchant.Dict("en_US")
+    chkr = SpellChecker("en_US")
+    chkr.set_text(esstxt)
+    err_cnt = 0
+    for err in chkr:
+        print "ERROR: ", err.word,
+        slist = sdict.suggest(err.word)
+        print "-----",
+        print "Perhaps you meant", slist[0],
+        print "?"
+        err_cnt = err_cnt + 1
+    return err_cnt
+
 
 def check_flags(t, nNPflag, nVPflag):
     try:
@@ -98,10 +113,11 @@ def get_type1_errors(esstxt):
 
 def get_syntax_errors(esstxt):
     nt1 = get_type1_errors(esstxt)
-    return nt1
+    nt2 = get_type2_errors(esstxt)
+    return nt1+nt2
 
 
-f = open('Dataset/Set1Complete.csv', 'rb')
+f = open('/Users/abhinandandubey/Library/Mobile Documents/com~apple~CloudDocs/S17/AES/Dataset/Set1Complete.csv', 'rb')
 count = 0
 try:
     reader = csv.reader(f)
