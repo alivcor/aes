@@ -29,16 +29,24 @@ class bcolors:
         self.END = ''
 
 
-def issueMessage(text, logfilename):
-    toprint = "{.NORMAL}{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors, bcolors)
+def issueMessage(text, logfilename, ifBold=False):
+    if ifBold:
+        toprint = "{.NORMAL}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors, bcolors)
+    else:
+        toprint = "{.NORMAL}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
 
-def issueSleep(text, logfilename):
-    toprint = "{.SLEEP}{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors, bcolors)
+def issueSleep(text, logfilename, ifBold=False):
+    if ifBold:
+        toprint = "{.SLEEP}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors, bcolors)
+    else:
+        toprint = "{.SLEEP}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
@@ -49,9 +57,13 @@ def issueSharpAlert(text, logfilename):
         f.write("\n(DeepScore Engine) : " + text)
 
 
-def issueError(text, logfilename):
-    toprint = "{.FAIL}{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors, bcolors)
+def issueError(text, logfilename, ifBold=False):
+    if ifBold:
+        toprint = "{.FAIL}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors, bcolors)
+    else:
+        toprint = "{.FAIL}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
@@ -62,16 +74,19 @@ def issueWelcome(logfilename):
     print "{.BLUE}{.BOLD}        |               {.END}".format(bcolors, bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write(" __         __          \n|  \ _ _ _ (_  _ _  _ _ \n|__/(-(-|_)__)(_(_)| (- \n        |               ")
-
     print "\n\n"
     with open(logfilename, 'a') as f:
         f.write("\n\n(DeepScore Engine) : Welcome to DeepScore v0.1")
     toprint = "{.BLUE}{.BOLD}(DeepScore Engine){.END}" + " : " + "Welcome to DeepScore v0.1"
     print toprint.format(bcolors, bcolors, bcolors)
 
-def issueSuccess(text, logfilename):
-    toprint = "{.LIME}{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors, bcolors)
+def issueSuccess(text, logfilename, ifBold=False):
+    if ifBold:
+        toprint = "{.LIME}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors, bcolors)
+    else:
+        toprint = "{.LIME}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
@@ -83,9 +98,13 @@ def genLogFile(logfilename, ts, strts):
         f.write("\n(DeepScore Engine) : " + "Logging all events to " + str(ts))
 
 
-def issueWarning(text, logfilename):
-    toprint = "{.BROWN}{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors, bcolors)
+def issueWarning(text, logfilename, ifBold=False):
+    if ifBold:
+        toprint = "{.BROWN}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors, bcolors)
+    else:
+        toprint = "{.BROWN}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 

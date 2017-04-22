@@ -24,14 +24,15 @@ def start_deepscore_core():
 local_cache = {}
 start_deepscore_core()
 # print glove.getWordVec("hello", _LOGFILENAME)
-total_hits = 0
-total_done = 0
+total_hits = 0.
+total_done = 0.
 
 with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
     datareader = csv.reader(csvfile)
     next(datareader, None)
     X = []
     Y = []
+    total_essays = len(datareader)
     for row in datareader:
         essay_vector = np.zeros(300,)
         essay = row[2]
@@ -55,7 +56,7 @@ with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
         essay_vector = essay_vector/wcount
         X.append(essay_vector)
         Y.append(score)
-        EventIssuer.issueMessage("Completed an essay.", _LOGFILENAME)
+        EventIssuer.issueSharpAlert("Complete: " + str(total_done*100/total_essays) + "%", _LOGFILENAME)
 
 
 print X.shape, Y.shape
