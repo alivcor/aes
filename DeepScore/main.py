@@ -49,7 +49,10 @@ with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
                 total_hits += 1
                 if(total_done % 10 == 0):
                     EventIssuer.issueSuccess("Cache Hit ! Current Hit Rate : " + str(round(total_hits*100/total_tokens_processed, 2)) + "%", _LOGFILENAME)
-                cache_hit_points.append([total_done, round(total_hits*100/total_done, 2)])
+                    EventIssuer.issueMessage("Saving the dictionary at " + str(total_done), _LOGFILENAME)
+                    with open('w2v_dict_' + str(timestamp) + '.ds', 'w') as f:
+                        pickle.dump(local_cache, f)
+                cache_hit_points.append([total_done, round(total_hits*100/total_tokens_processed, 2)])
             except KeyError:
                 wvec = glove.getWordVec(word, logfilename=_LOGFILENAME)
                 local_cache[word] = wvec
