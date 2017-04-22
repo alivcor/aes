@@ -32,7 +32,7 @@ with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
     next(datareader, None)
     X = []
     Y = []
-    total_essays = len(datareader)
+    total_essays = 1783.
     for row in datareader:
         essay_vector = np.zeros(300,)
         essay = row[2]
@@ -52,7 +52,7 @@ with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
             else:
                 for wvector in wvec:
                     essay_vector = np.add(essay_vector, wvector)
-            total_done += 1
+            total_done += 1.
         essay_vector = essay_vector/wcount
         X.append(essay_vector)
         Y.append(score)
