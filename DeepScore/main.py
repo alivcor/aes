@@ -45,12 +45,12 @@ with open("../Dataset/Set1Complete.csv", "rb") as csvfile:
                 EventIssuer.issueSuccess("Cache Hit ! Current Hit Rate : " + str(total_hits*100/total_done) + "%", _LOGFILENAME)
             except KeyError:
                 wvec = glove.getWordVec(word, logfilename=_LOGFILENAME)
-                if type(wvec) != list:
-                    essay_vector = np.add(essay_vector, wvec)
-                else:
-                    for wvector in wvec:
-                        essay_vector = np.add(essay_vector, wvector)
                 local_cache[word] = wvec
+            if type(wvec) != list:
+                essay_vector = np.add(essay_vector, wvec)
+            else:
+                for wvector in wvec:
+                    essay_vector = np.add(essay_vector, wvector)
             total_done += 1
         essay_vector = essay_vector/wcount
         X.append(essay_vector)
