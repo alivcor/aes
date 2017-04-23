@@ -14,7 +14,7 @@ Automated Essay Scoring systems are being widely used in the industry - The ETS 
 <br/>
 
 <p align="center">
-<img src="https://camo.githubusercontent.com/abb87e84f23816282f054ac08886a451518dacdf/68747470733a2f2f626c6f672e6b657261732e696f2f696d672f6b657261732d74656e736f72666c6f772d6c6f676f2e6a7067" alt="DeepScore" height="300" style="display: block; margin: 0 auto;" align="middle"/>
+<img src="https://camo.githubusercontent.com/abb87e84f23816282f054ac08886a451518dacdf/68747470733a2f2f626c6f672e6b657261732e696f2f696d672f6b657261732d74656e736f72666c6f772d6c6f676f2e6a7067" alt="DeepScore" height="100" style="display: block; margin: 0 auto;" align="middle"/>
 </p>
 
 ## Goals
