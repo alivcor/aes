@@ -86,9 +86,9 @@ def preprocessDataset():
                 EventIssuer.issueMessage("Saving the dictionary at " + str(total_done), _LOGFILENAME)
                 with open('dictionaries/w2v_dict_' + str(timestamp) + '.dsd', 'w') as f:
                     pickle.dump(local_cache, f)
-            if(total_done >= 700):
-                EventIssuer.issueWarning("Stopping at 700 essays.", _LOGFILENAME)
-                break
+            # if(total_done >= 700):
+            #     EventIssuer.issueWarning("Stopping at 700 essays.", _LOGFILENAME)
+            #     break
 
     afterEnd = time.time()
     with open('dictionaries/w2v_dict_final_' + str(timestamp) + '.dsd', 'w') as f:
@@ -130,10 +130,11 @@ model.add(Dense(12, activation='tanh'))
 model.add(Dense(13, activation='sigmoid'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(train_X, train_Y, epochs=150, batch_size=10)
+model.fit(train_X, train_Y, epochs=200, batch_size=5)
 
-with open('models/model_' + str(timestamp) + '.dsm', 'w') as f:
-    pickle.dump(model, f)
+# with open('models/model_' + str(timestamp) + '.dsm', 'w') as f:
+#     pickle.dump(model, f)
+# res = model.predict(test_X)
 
 scores = model.evaluate(test_X, test_Y)
 print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))

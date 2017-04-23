@@ -10,3 +10,4 @@ os.system(tesseract_command)
 # fileOpen = open("out.txt", "r")
 #
 # os.remove(textOutput)
+
