@@ -1,4 +1,4 @@
-# Socio-economic Assessment of Climate Vulnerability
+# A Two-Fold Exploratory Study on AES
 
 
 [![Build Status](https://travis-ci.org/fchollet/keras.svg?branch=master)](https://github.com/alivcor/aes)
@@ -8,7 +8,7 @@
 Automated Essay Scoring systems are being widely used in the industry - The ETS uses AES to grade the AWA section of the new GRE, and same applies to the GMAT. The present research has been limited to rely heavily on extracting care- fully designed features to evaluate and score essays through training on huge datasets. This makes it impossible for primary school teachers to use such systems for grading. Moreover, until recently, even the systems which involve training on huge datasets yielded average results. In this project, we want to study both perspectives of solving this problem.
 
 <p align="center">
-<img src="https://scontent-lga3-1.xx.fbcdn.net/v/t1.0-9/17523715_1854956714753291_7113673353363182406_n.png?oh=4ce9602bba2cbbb959842f5e136a42b3&oe=59954BC3" alt="Climate Change" width="200" height="200" style="display: block; margin: 0 auto;" align="middle"/>
+<img src="https://github.com/alivcor/aes/blob/master/DeepScore/deepscore_logo_png.png" alt="DeepScore" height="300" style="display: block; margin: 0 auto;" align="middle"/>
 </p>
 
 ## Goals
