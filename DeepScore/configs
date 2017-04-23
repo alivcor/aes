@@ -1,0 +1,16 @@
+41.50%
+model = Sequential()
+model.add(Dense(12, input_dim=300, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(13, activation='sigmoid'))
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['categorical_accuracy'])
+
+
+92.31%
+model = Sequential()
+model.add(Dense(12, input_dim=300, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(13, activation='sigmoid'))
+
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.fit(train_X, train_Y, epochs=200, batch_size=10)

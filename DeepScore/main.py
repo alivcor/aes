@@ -36,8 +36,9 @@ def encodeOneHot(score):
     return np.array(onehot_y)
 
 def preprocessDataset():
-    local_cache = pickle.load(open("dictionaries/w2v_dict_1492912478.79.dsd", "r" ))
+    # local_cache = pickle.load(open("dictionaries/w2v_dict_1492912478.79.dsd", "r" ))
     # print glove.getWordVec("hello", _LOGFILENAME)
+    local_cache = {}
     total_hits = 0.
     total_done = 0.
     total_tokens_processed = 0.
@@ -112,25 +113,26 @@ def preprocessDataset():
 
 
 start_deepscore_core()
-preprocessDataset()
-X, Y = loadppData('ppData/X_' + str(timestamp) + '.ds', 'ppData/Y_' + str(timestamp) + '.ds')
-
+# preprocessDataset()
+# X, Y = loadppData('ppData/X_' + str(timestamp) + '.ds', 'ppData/Y_' + str(timestamp) + '.ds')
+X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
 
 print X.shape, Y.shape
 # split into input (X) and output (Y) variables
-train_X = X[0:651,:]
-train_Y = Y[0:651,]
-test_X = X[651:700,:]
-test_Y = Y[651:700,]
+train_X = X[0:1500,:]
+train_Y = Y[0:1500,]
+test_X = X[1500:1700,:]
+test_Y = Y[1500:1700,]
 
 print train_X.shape, train_Y.shape, test_X.shape, test_Y.shape
 model = Sequential()
-model.add(Dense(48, input_dim=300, activation='tanh'))
-model.add(Dense(12, activation='tanh'))
-model.add(Dense(13, activation='sigmoid'))
+model.add(Dense(12, input_dim=300, activation='relu'))
+model.add(Dense(8, activation='tanh'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(13, activation='softmax'))
 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(train_X, train_Y, epochs=200, batch_size=5)
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.fit(train_X, train_Y, epochs=200, batch_size=10)
 
 # with open('models/model_' + str(timestamp) + '.dsm', 'w') as f:
 #     pickle.dump(model, f)
