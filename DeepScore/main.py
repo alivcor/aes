@@ -22,11 +22,15 @@ def start_deepscore_core():
     EventIssuer.genLogFile(_LOGFILENAME, timestamp, strstamp)
 
 
-def loadppData():
-    X = pickle.load(open("ppData/X_50.ds", "r"))
-    Y = pickle.load(open("ppData/Y_50.ds", "r"))
+def loadppData(xfname, yfname):
+    X = pickle.load(open(xfname, "r"))
+    Y = pickle.load(open(yfname, "r"))
     return X, Y
 
+def encodeOneHot(score):
+    onehot_y = [0] * 13
+    onehot_y[int(score)] = 1
+    return np.array(onehot_y)
 
 def preprocessDataset():
     local_cache = pickle.load(open("dictionaries/w2v_dict.dsd", "r" ))
@@ -66,7 +70,7 @@ def preprocessDataset():
             total_done += 1.
             essay_vector = essay_vector/wcount
             X.append(essay_vector)
-            Y.append(score)
+            Y.append(encodeOneHot(score))
             EventIssuer.issueSharpAlert("Complete: " + str(round(total_done*100/total_essays, 2)) + "%", _LOGFILENAME)
             if (total_done % 10 == 0):
                 EventIssuer.issueSuccess(
@@ -75,8 +79,8 @@ def preprocessDataset():
                 EventIssuer.issueMessage("Saving the dictionary at " + str(total_done), _LOGFILENAME)
                 with open('dictionaries/w2v_dict_' + str(timestamp) + '.dsd', 'w') as f:
                     pickle.dump(local_cache, f)
-            if(total_done >= 50):
-                EventIssuer.issueWarning("Stopping at 50 essays.", _LOGFILENAME)
+            if(total_done >= 700):
+                EventIssuer.issueWarning("Stopping at 700 essays.", _LOGFILENAME)
                 break
 
     afterEnd = time.time()
@@ -101,24 +105,16 @@ def preprocessDataset():
 
 
 start_deepscore_core()
-# preprocessDataset()
-X, rawY = loadppData()
+preprocessDataset()
+X, Y = loadppData('ppData/X_' + str(timestamp) + '.ds', 'ppData/Y_' + str(timestamp) + '.ds')
 
-
-Y = []
-for yval in rawY:
-    print yval
-    onehot_y = [0]*13
-    onehot_y[int(yval)] = 1
-    Y.append(onehot_y)
-Y = np.array(Y)
 
 print X.shape, Y.shape
 # split into input (X) and output (Y) variables
-train_X = X[0:41,:]
-train_Y = Y[0:41,]
-test_X = X[41:51,:]
-test_Y = Y[41:51,]
+train_X = X[0:651,:]
+train_Y = Y[0:651,]
+test_X = X[651:700,:]
+test_Y = Y[651:700,]
 
 print train_X.shape, train_Y.shape, test_X.shape, test_Y.shape
 model = Sequential()
@@ -128,6 +124,9 @@ model.add(Dense(13, activation='sigmoid'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.fit(train_X, train_Y, epochs=150, batch_size=10)
+
+with open('models/model_' + str(timestamp) + '.dsm', 'w') as f:
+    pickle.dump(model, f)
 
 scores = model.evaluate(test_X, test_Y)
 print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
