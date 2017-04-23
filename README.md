@@ -13,15 +13,18 @@ Automated Essay Scoring systems are being widely used in the industry - The ETS 
 
 <br/>
 
-<p align="center">
-<img src="https://camo.githubusercontent.com/abb87e84f23816282f054ac08886a451518dacdf/68747470733a2f2f626c6f672e6b657261732e696f2f696d672f6b657261732d74656e736f72666c6f772d6c6f676f2e6a7067" alt="DeepScore" height="100" style="display: block; margin: 0 auto;" align="middle"/>
-</p>
 
 ## Goals
 1. Perform extensive feature engineering to find out specific cues to grade essays in the cases where sample size could be as low as 5 graded essays.
 2. Implement the state-of-the-art system using Recurrent Neural Networks for grading essays - this involves training on conventional datasets.
 
 ## Implementation level details
+
+<p align="center">
+<img src="https://camo.githubusercontent.com/abb87e84f23816282f054ac08886a451518dacdf/68747470733a2f2f626c6f672e6b657261732e696f2f696d672f6b657261732d74656e736f72666c6f772d6c6f676f2e6a7067" alt="DeepScore" height="100" style="display: block; margin: 0 auto;" align="middle"/>
+</p>
+
+
 We will be using the ”The Hewlett Foundation: Automated Essay Scoring” dataset from Kaggle by The Hewlett Foun- dation which consists of around 1785 essays on 8 different topics, in a score range of 0-6.
 
 1. The first part of our project will be to implement a basic Machine Learning Model described in (1)
