@@ -3,6 +3,7 @@ import time
 import datetime
 import EventIssuer
 import csv
+import sys
 from nltk import word_tokenize
 from keras.models import Sequential
 from keras.layers import Dense
@@ -11,6 +12,8 @@ import numpy as np
 import pickle
 
 _LOGFILENAME = ""
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 def start_deepscore_core():
     global _LOGFILENAME, timestamp
@@ -33,7 +36,7 @@ def encodeOneHot(score):
     return np.array(onehot_y)
 
 def preprocessDataset():
-    local_cache = pickle.load(open("dictionaries/w2v_dict.dsd", "r" ))
+    local_cache = pickle.load(open("dictionaries/w2v_dict_1492912478.79.dsd", "r" ))
     # print glove.getWordVec("hello", _LOGFILENAME)
     total_hits = 0.
     total_done = 0.
@@ -51,7 +54,11 @@ def preprocessDataset():
             essay_vector = np.zeros(300,)
             essay = row[2]
             score = float(float(row[3])+float(row[4]))
-            word_tokens = word_tokenize(essay)
+            try:
+                word_tokens = word_tokenize(essay)
+            except UnicodeDecodeError:
+                essay = essay.decode('latin-1').encode("utf-8")
+                word_tokens = word_tokenize(essay)
             wcount = len(word_tokens)
             for word in word_tokens:
                 total_tokens_processed += 1
