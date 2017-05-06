@@ -54,7 +54,8 @@ def preprocessEssayText(_LOGFILENAME, essay_filename):
     essay_vector = essay_vector / wcount
     afterEnd = time.time()
     EventIssuer.issueSuccess("Preprocessed the essay in " + str(afterEnd-beforeStart) + " | Hit Rate : " + str(total_hits*100/total_tokens_processed), _LOGFILENAME)
-    return essay_vector
+    X.append(essay_vector)
+    return np.array(X)
 
 def preprocessDataset(_LOGFILENAME, timestamp):
     # local_cache = pickle.load(open("dictionaries/w2v_dict_1492912478.79.dsd", "r" ))

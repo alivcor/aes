@@ -9,6 +9,7 @@ from nltk import word_tokenize
 from keras.models import Sequential
 from keras.layers import Dense
 import numpy as np
+from keras.models import model_from_yaml
 # fix random seed for reproducibility
 import pickle
 
@@ -44,9 +45,21 @@ def saveModel(model, _LOGFILENAME, timestamp):
 
 def loadDeepScoreModel(_LOGFILENAME, model_fn):
     EventIssuer.issueMessage("Loading DeepScore Model : " + model_fn, _LOGFILENAME)
-    dsm = pickle.load(open('models/model_' + str(model_fn) + '.dsm', 'r'))
+    # dsm = pickle.load(open('models/model_' + str(model_fn) + '.dsm', 'r'))
+
+    # load YAML and create model
+    yaml_file = open('models/model_' + str(model_fn) + '.dsm', 'r')
+    loaded_model_yaml = yaml_file.read()
+    yaml_file.close()
+    loaded_model = model_from_yaml(loaded_model_yaml)
+    # load weights into new model
+    loaded_model.load_weights('models/weights_' + str(model_fn) + '.h5')
+
+    # evaluate loaded model on test data
+    loaded_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
     EventIssuer.issueSuccess("Loaded Model Successfully.", _LOGFILENAME)
-    return dsm
+    return loaded_model
 
 def train_model():
     _LOGFILENAME, timestamp = start_deepscore_core()
@@ -78,7 +91,7 @@ def train_model():
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
 
-train_model()
+# train_model()
 #
 # start_deepscore_core()
 # # preprocessDataset(_LOGFILENAME, timestamp)

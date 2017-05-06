@@ -34,10 +34,11 @@ def main(argv, _LOGFILENAME, timestamp):
         elif opt in ("-i", "--ifile"):
             EssayFileName = arg
     essay_vector = DataPreprocessor.preprocessEssayText(_LOGFILENAME, EssayFileName)
-    model = DeepScore_Core.loadDeepScoreModel(_LOGFILENAME, "1492913151.51")
-    predicted_score = model.predict(essay_vector)
-    print predicted_score
-    EventIssuer.issueSuccess("The essay has been graded. I think the score should be" + str(predicted_score.index("1")) + " out of 12", _LOGFILENAME)
+    # print essay_vector.shape
+    model = DeepScore_Core.loadDeepScoreModel(_LOGFILENAME, "1494040329.92")
+    predicted_score = np.argmax(np.squeeze(model.predict(essay_vector)))
+    # print predicted_score
+    EventIssuer.issueSuccess("The essay has been graded. I think the score should be " + str(predicted_score) + " out of 12", _LOGFILENAME, ifBold=True)
 
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
