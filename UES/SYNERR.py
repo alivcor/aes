@@ -107,10 +107,13 @@ def get_syntax_errors(esstxt):
     nt2 = get_type2_errors(esstxt)
     return nt1+nt2
 
-def scoreSYNERR(essay_fn):
+def scoreSYNERR(essay_fn, ifesstxt=False):
     '''Get the essay to be graded'''
-    with open(essay_fn, 'rb') as f:
-        test_essay = f.read()
+    if ifesstxt:
+        test_essay = essay_fn
+    else:
+        with open(essay_fn, 'rb') as f:
+            test_essay = f.read()
     nerrs = get_syntax_errors(test_essay)
     return (12-nerrs*0.4)
 

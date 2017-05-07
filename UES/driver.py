@@ -10,11 +10,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hi:d:",["ifile=", "dfile="])
     except getopt.GetoptError:
-        print 'SEAM.py -i <inputfile> -d <datafile>'
+        print 'driver.py -i <inputfile> -d <datafile>'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'SEAM.py -i <inputfile> -d <datafile>'
+            print 'driver.py -i <inputfile> -d <datafile>'
             sys.exit()
         elif opt in ("-i", "--ifile"):
             EssayFileName = arg

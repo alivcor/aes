@@ -82,17 +82,19 @@ def getPerfectStat(perfect_essays):
 
 
 
-def performSA(essay_fn, data_fn):
+def performSA(essay_fn, data_fn, ifesstxt=False):
     svParams = []
     '''Get perfect essays'''
     with open('Database/'+data_fn, 'rb') as f:
         perfect_essays = f.readlines()
     # esstxts.append(" ".join(perfect_essays))
 
-
-    '''Get the essay to be graded'''
-    with open(essay_fn, 'rb') as f:
-        test_essay = f.read()
+    if ifesstxt:
+        test_essay = essay_fn
+    else:
+        '''Get the essay to be graded'''
+        with open(essay_fn, 'rb') as f:
+            test_essay = f.read()
     ignorechars = ''',:'!@'''
 
     perfect_stat = getPerfectStat(perfect_essays)

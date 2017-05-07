@@ -80,7 +80,7 @@ def getPOSCounts(essay_txt):
 
 
 
-def scoreSYN(essay_fn, data_fn):
+def scoreSYN(essay_fn, data_fn, ifesstxt=False):
     esstxts = []
     svParams = []
     '''Get perfect essays'''
@@ -88,10 +88,12 @@ def scoreSYN(essay_fn, data_fn):
         perfect_essays = f.readlines()
     esstxts.append(" ".join(perfect_essays))
 
-
-    '''Get the essay to be graded'''
-    with open(essay_fn, 'rb') as f:
-        test_essay = f.read()
+    if ifesstxt:
+        test_essay = essay_fn
+    else:
+        '''Get the essay to be graded'''
+        with open(essay_fn, 'rb') as f:
+            test_essay = f.read()
     esstxts.append(test_essay)
     ignorechars = ''',:'!@'''
 
