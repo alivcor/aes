@@ -98,17 +98,17 @@ def scoreSYN(essay_fn, data_fn):
     test_counts = getPOSCounts(test_essay)
     avg_score = 0
     num_essays = len(perfect_essays)
-    print test_counts
+    # print test_counts
     for essay in perfect_essays:
         pos_score = 0
         perf_count = getPOSCounts(essay)
         diff_counts = perf_count - test_counts
-        print "perf_count", perf_count
+        # print "perf_count", perf_count
 
         for i in range(0,len(diff_counts)):
             diff_counts[i] = 12*math.fabs(diff_counts[i])
 
-        print "diff_counts", diff_counts
+        # print "diff_counts", diff_counts
 
         for diff_score in diff_counts:
             pos_score += diff_score

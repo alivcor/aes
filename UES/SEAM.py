@@ -86,7 +86,7 @@ def performLSA(essay_fn, data_fn):
     csim = 1 - spatial.distance.cosine(tfidf[0], tfidf[1])
     # print "CSIM: ", csim
     # print dict(zip(vectorizer.get_feature_names(), idf))
-    return csim
+    return csim*12
 
 
 
