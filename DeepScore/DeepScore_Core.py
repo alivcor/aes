@@ -176,7 +176,7 @@ def testModel():
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
 
-testModel()
+# testModel()
 # train_LSTM()
 # train_model()
 #

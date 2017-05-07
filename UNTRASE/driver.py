@@ -35,7 +35,9 @@ def main(argv):
 
     calibrator = pickle.load(open("calibrated_model.sav", 'rb'))
     # print "FINAL SCORE : ", int(0.19738706*seam_score + 0.12756882*sam_score + 0.465254231*synan_score + 0.03680639*disam_score + 0.0728261*synerr_score)
-    print int(calibrator.predict(np.array([seam_score, sam_score, synan_score, disam_score, synerr_score])))
+    scoref = int(calibrator.predict(np.array([seam_score, sam_score, synan_score, disam_score, synerr_score])))
+    with open("/Users/abhinandandubey/Documents/untrase.txt", 'w') as fui:
+        fui.write(str(scoref))
 
 if __name__ == "__main__":
     main(sys.argv[1:])

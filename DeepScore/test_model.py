@@ -44,7 +44,8 @@ def main(argv, _LOGFILENAME, timestamp):
     predicted_score = np.argmax(np.squeeze(model.predict(essay_vector)))
     # print predicted_score
     EventIssuer.issueSuccess("The essay has been graded. I think the score should be " + str(predicted_score) + " out of 12", _LOGFILENAME, ifBold=True)
-
+    with open("/Users/abhinandandubey/Documents/resui.txt", 'w') as fui:
+        fui.write(str(predicted_score))
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
 
