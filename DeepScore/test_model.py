@@ -1,3 +1,8 @@
+########################################
+########################################
+####### Author : Abhinandan Dubey (alivcor)
+####### Stony Brook University
+
 import DeepScore_Word2Vec
 import DataPreprocessor
 import DeepScore_Core

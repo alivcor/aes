@@ -1,3 +1,8 @@
+########################################
+########################################
+####### Author : Abhinandan Dubey (alivcor)
+####### Stony Brook University
+
 import EventIssuer
 import progressbar
 import numpy

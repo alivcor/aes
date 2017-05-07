@@ -1,3 +1,8 @@
+########################################
+########################################
+####### Author : Abhinandan Dubey (alivcor)
+####### Stony Brook University
+
 from logwriter import *
 import sys
 

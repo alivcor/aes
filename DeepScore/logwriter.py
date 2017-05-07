@@ -1,3 +1,8 @@
+########################################
+########################################
+####### Author : Abhinandan Dubey (alivcor)
+####### Stony Brook University
+
 import sys, os
 import string
 import time
