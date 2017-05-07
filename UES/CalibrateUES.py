@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 import time
+import pickle
 
 warnings.filterwarnings(action="ignore", module="scipy", message="^internal gelsd")
 
@@ -67,7 +68,7 @@ def main(argv):
                 data_X.append([seam_score, sam_score, synan_score, disam_score, synerr_score])
                 data_Y.append(ess_score_r1+ess_score_r2)
             count +=1
-            print count*100/1782, "% Complete.. | Est. Time Remaining : ", ((time.time()-beforeStart)*1782)/(count*60), "Minutes"
+            print count*100/1782, "% Complete.. | Est. Time Remaining : ", ((time.time()-beforeStart)*(1782-count))/(count*60), "Minutes"
     finally:
         f.close()
 
@@ -93,6 +94,8 @@ def main(argv):
 
     print "Calibrated Weights : "
     print regr.coef_
+    filename = 'calibrated_model.sav'
+    pickle.dump(regr, open(filename, 'wb'))
 
 
 if __name__ == "__main__":
