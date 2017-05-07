@@ -85,11 +85,3 @@ sent_vect = (student + wfor + wan + answer)/4
 
 
 
-print (1 - spatial.distance.cosine(searched, looked))
-print (1 - spatial.distance.cosine(searched, sought))
-print (1 - spatial.distance.cosine(searched, sent_vect))
-print (1 - spatial.distance.cosine(random1, studfor))
-print (1 - spatial.distance.cosine(random2, studfor))
-print (1 - spatial.distance.cosine(random3, studfor))
-print (1 - spatial.distance.cosine(random4, studfor))
-print (1 - spatial.distance.cosine(random5, studfor))

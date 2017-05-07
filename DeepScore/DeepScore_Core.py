@@ -11,9 +11,12 @@ import datetime
 import EventIssuer
 import csv
 import sys
+import math
 from nltk import word_tokenize
 from keras.models import Sequential
 from keras.layers import Dense
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
 import numpy as np
 from keras.models import model_from_yaml
 from keras.models import Sequential
@@ -112,18 +115,9 @@ def train_LSTM():
 
     model = Sequential()
     model.add(LSTM(32, input_dim=300, return_sequences=True))
-    # now model.output_shape == (None, 32)
-    # note: `None` is the batch dimension.
 
-    # for subsequent layers, no need to specify the input size:
     model.add(LSTM(16, return_sequences=True, activation='tanh'))
-
-    # to stack recurrent layers, you must use return_sequences=True
-    # on any recurrent layer that feeds into another recurrent layer.
-    # note that you only need to specify the input size on the first layer.
-
     model.add(LSTM(12, return_sequences=True))
-
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.fit(train_X, train_Y, epochs=200, batch_size=10)
@@ -136,7 +130,54 @@ def train_LSTM():
 
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
-train_LSTM()
+def getRMSE(predicted_scores, actual_scores):
+    err_val = 0.
+    for i in range(0, len(predicted_scores)):
+        predicted_score = predicted_scores[i]
+        actual_score = actual_scores[i]
+        err_val += math.pow((predicted_score - actual_score), 2)
+    mse = err_val / len(predicted_scores)
+    rmse = math.sqrt(mse)
+    return rmse
+
+
+def testModel():
+    _LOGFILENAME, timestamp = start_deepscore_core()
+    EventIssuer.issueMessage("Testing the model", _LOGFILENAME)
+    X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
+    test_X = X[1500:1700, :]
+    test_Y = Y[1500:1700, ]
+    predicted_scores = []
+    actual_scores = []
+
+    model = loadDeepScoreModel(_LOGFILENAME, "1494040329.92")
+    for essay_vector in test_X:
+        predicted_scores.append(np.argmax(np.squeeze(model.predict(essay_vector.reshape(1,-1)))))
+    for actvector in test_Y:
+        actual_scores.append(np.argmax(actvector))
+
+    predicted_scores = np.array(predicted_scores)
+    actual_scores = np.array(actual_scores)
+
+    rmse = getRMSE(predicted_scores, actual_scores)
+    print "RMSE is : ", rmse
+    # print predicted_scores.shape
+    # print actual_scores.shape
+    print accuracy_score(actual_scores, predicted_scores)
+    print(classification_report(actual_scores, predicted_scores))
+    # print predicted_scores
+    # print actual_scores
+    scores = model.evaluate(test_X, test_Y)
+    print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
+
+    EventIssuer.issueSuccess("The essays has been graded. ", _LOGFILENAME, ifBold=True)
+
+
+    EventIssuer.issueExit(_LOGFILENAME, timestamp)
+
+
+testModel()
+# train_LSTM()
 # train_model()
 #
 # start_deepscore_core()
