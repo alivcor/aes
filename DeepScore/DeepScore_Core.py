@@ -141,7 +141,7 @@ def getRMSE(predicted_scores, actual_scores):
     return rmse
 
 
-def testModel():
+def testModel(model_fn=None):
     _LOGFILENAME, timestamp = start_deepscore_core()
     EventIssuer.issueMessage("Testing the model", _LOGFILENAME)
     X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
@@ -150,7 +150,10 @@ def testModel():
     predicted_scores = []
     actual_scores = []
 
-    model = loadDeepScoreModel(_LOGFILENAME, "1494040329.92")
+    if(model_fn==None):
+        model = loadDeepScoreModel(_LOGFILENAME, "1494040329.92")
+    else:
+        model = loadDeepScoreModel(_LOGFILENAME, model_fn)
     for essay_vector in test_X:
         predicted_scores.append(np.argmax(np.squeeze(model.predict(essay_vector.reshape(1,-1)))))
     for actvector in test_Y:
@@ -176,6 +179,43 @@ def testModel():
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
 
+
+
+def qw_kappa(y_true, y_pred):
+
+
+def traintest_model():
+    _LOGFILENAME, timestamp = start_deepscore_core()
+    EventIssuer.issueMessage("Training a new model", _LOGFILENAME)
+    X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
+    # print X.shape, Y.shape
+    # split into input (X) and output (Y) variables
+    train_X = X[0:1500,:]
+    train_Y = Y[0:1500,]
+    test_X = X[1500:1700,:]
+    test_Y = Y[1500:1700,]
+
+    print train_X.shape, train_Y.shape, test_X.shape, test_Y.shape
+    model = Sequential()
+    model.add(Dense(12, input_dim=300, activation='relu'))
+    model.add(Dense(8, activation='tanh'))
+    model.add(Dense(8, activation='relu'))
+    model.add(Dense(13, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', qw_kappa])
+    model.fit(train_X, train_Y, epochs=200, batch_size=10)
+
+    saveModel(model, _LOGFILENAME, timestamp)
+    # res = model.predict(test_X)
+
+    scores = model.evaluate(test_X, test_Y)
+    print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+    EventIssuer.issueExit(_LOGFILENAME, timestamp)
+
+    testModel(timestamp)
+
+traintest_model()
 # testModel()
 # train_LSTM()
 # train_model()
