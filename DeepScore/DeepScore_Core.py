@@ -24,6 +24,7 @@ from keras.layers import Dense, Activation, LSTM
 import DeepScore_Metrics
 # fix random seed for reproducibility
 import pickle
+import keras.backend as K
 
 _LOGFILENAME = ""
 reload(sys)
@@ -185,7 +186,10 @@ def decodeOneHot(rating_array):
 
 
 def qw_kappa(y_true, y_pred):
+    print y_true, y_pred
+    print y_true.shape[0], y_pred.shape[0]
     assert(y_true.shape[0] == y_pred.shape[0])
+
     decoded_y_true = np.zeros(y_true.shape[0])
     decoded_y_pred = np.zeros(y_pred.shape[0])
     for i in range(0, y_true.shape[0]):
@@ -228,6 +232,8 @@ def traintest_model():
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
     testModel(timestamp)
+
+
 
 traintest_model()
 # testModel()
