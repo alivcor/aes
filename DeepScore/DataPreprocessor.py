@@ -138,3 +138,33 @@ def preprocessDataset(_LOGFILENAME, timestamp):
             f.write(str(i[0]) + "," + str(i[1]) + "\n")
 
 
+
+def randPartition(alldata_X, alldata_Y, _FRACTION):
+    """
+    adopted from https://gist.github.com/alivcor/9516927cc211c4cf274167d84574e068 by Abhinandan Dubey (alivcor)
+    alldata_X : All of your X (Features) data
+    alldata_Y : All of your Y (Prediction) data
+    _FRACTION : The fraction of data rows you want for train (0.75 means you need 75% of your data as train and 25% as test)
+    """
+    np.random.seed(0)
+    indices = np.arange(alldata_X.shape[0])
+    np.random.shuffle(indices)
+
+    dataX = alldata_X[indices]
+    dataY = alldata_Y[indices]
+
+    partition_index = dataX.shape[0] * _FRACTION
+
+    trainX = dataX[0:partition_index]
+    testX = dataX[partition_index:dataX.shape[0]]
+
+    trainY = dataY[0:partition_index]
+    testY = dataY[partition_index:dataY.shape[0]]
+
+    return [trainX, trainY, testX, testY]
+
+
+def partitionDataset(X, Y):
+    trainX, trainY, testX, testY = randPartition(X, Y, 0.80)
+    trainX, trainY, devX, devY = randPartition(trainX, trainY, 0.80)
+    return trainX, trainY, devX, devY, testX, testY

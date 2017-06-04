@@ -22,6 +22,7 @@ from keras.models import model_from_yaml
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 import DeepScore_Metrics
+import Analyzer
 # fix random seed for reproducibility
 import pickle
 import keras.backend as K
@@ -208,10 +209,8 @@ def traintest_model():
     X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
     # print X.shape, Y.shape
     # split into input (X) and output (Y) variables
-    train_X = X[0:1500,:]
-    train_Y = Y[0:1500,]
-    test_X = X[1500:1700,:]
-    test_Y = Y[1500:1700,]
+
+    train_X, train_Y, dev_X, dev_Y, test_X, test_Y = DataPreprocessor.partitionDataset(X, Y)
 
     print train_X.shape, train_Y.shape, test_X.shape, test_Y.shape
     model = Sequential()
@@ -221,7 +220,35 @@ def traintest_model():
     model.add(Dense(13, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', qw_kappa])
-    model.fit(train_X, train_Y, epochs=200, batch_size=10)
+
+    # Train
+
+    total_train_time = 0
+    total_eval_time = 0
+
+    for epoch_num in range(200):
+        # Training
+        t0 = time()
+        train_history = model.fit(train_X, train_Y, batch_size=10, nb_epoch=1, verbose=0)
+        tr_time = time() - t0
+        total_train_time += tr_time
+
+        # Evaluate
+        t0 = time()
+        Analyzer.analyze(model, _LOGFILENAME)
+        evl_time = time() - t0
+        total_eval_time += evl_time
+
+        # Issue events
+        train_loss = train_history.history['loss'][0]
+        train_metric = train_history.history['accuracy'][0]
+        epoch_info_1 = "Epoch " + epoch_num + ", train: " + tr_time + "s, evaluation: " + evl_time + "s"
+        epoch_info_2 = "[Train] loss: " + train_loss + ", metric: " + train_metric
+        EventIssuer.issueMessage(epoch_info_1, _LOGFILENAME)
+        EventIssuer.issueMessage(epoch_info_2, _LOGFILENAME)
+
+
+    # model.fit(train_X, train_Y, epochs=200, batch_size=10)
 
     saveModel(model, _LOGFILENAME, timestamp)
     # res = model.predict(test_X)
