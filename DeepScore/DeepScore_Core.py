@@ -8,6 +8,8 @@ import DeepScore_Word2Vec
 import DataPreprocessor
 import time
 import datetime
+from keras import optimizers
+from keras import regularizers
 import EventIssuer
 import csv
 import sys
@@ -184,7 +186,14 @@ def testModel(model_fn=None):
 
 
 
+
+
+
 def traintest_model():
+    """
+    Experimental Function
+    :return: None
+    """
     _LOGFILENAME, timestamp = start_deepscore_core()
     EventIssuer.issueMessage("Training a new model", _LOGFILENAME)
 
@@ -200,13 +209,19 @@ def traintest_model():
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='tanh'))
-    model.add(Dense(8, activation='tanh'))
-    model.add(Dense(13, activation='softmax'))
+    model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
+    model.add(Dense(8, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
+    model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.0001)))
+    #
+    # model = Sequential()
+    # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
+    # model.add(Activation('tanh'))
+    # model.add(Dense(13, activation='softmax'))
 
+    adam = optimizers.Adam(lr=0.0002, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['mean_squared_error'])
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'])
 
     # Train
     total_train_time = 0
