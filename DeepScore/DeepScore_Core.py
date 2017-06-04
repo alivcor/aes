@@ -195,44 +195,44 @@ def traintest_model():
 
     # Partition into train and test
     train_X, train_Y, dev_X, dev_Y, test_X, test_Y = DataPreprocessor.partitionDataset(X, Y)
-    EventIssuer.issueMessage("Training Set Size : " + train_X.shape[0] + " | Validation Set Size : " + dev_X.shape[0] + " | Test Set Size : " + test_X.shape[0], _LOGFILENAME)
+    # print "dev_Y[0] :", dev_Y[0]
+    EventIssuer.issueMessage("Training Set Size : " + str(train_X.shape[0]) + " | Validation Set Size : " + str(dev_X.shape[0]) + " | Test Set Size : " + str(test_X.shape[0]), _LOGFILENAME)
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='relu'))
+    model.add(Dense(12, input_dim=300, activation='tanh'))
     model.add(Dense(8, activation='tanh'))
-    model.add(Dense(8, activation='relu'))
     model.add(Dense(13, activation='softmax'))
 
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['mean_squared_error'])
 
     # Train
     total_train_time = 0
     total_valid_time = 0
 
-    for epoch_num in range(200):
+    for epoch_num in range(1000):
         # Training
-        start_time = time()
-        running_model = model.fit(train_X, train_Y, batch_size=10, nb_epoch=1, verbose=0)
-        train_time = time() - start_time
+        start_time = time.time()
+        running_model = model.fit(train_X, train_Y, batch_size=20, epochs=1, verbose=0)
+        train_time = time.time() - start_time
         total_train_time += train_time
 
         # Evaluate
-        start_time = time()
+        start_time = time.time()
 
-        analyzer_object = Analyzer.AnalyzerObject(model, _LOGFILENAME, dev_X, dev_Y, epoch_num)
+        analyzer_object = Analyzer.AnalyzerObject(model, _LOGFILENAME, dev_X, dev_Y, epoch_num, 20)
         analyzer_object.analyze()
 
-        valid_time = time() - start_time
+        valid_time = time.time() - start_time
         total_valid_time += valid_time
 
         # Issue events
         train_loss = running_model.history['loss'][0]
-        train_metric = running_model.history['accuracy'][0]
-        epoch_info_1 = "Epoch " + epoch_num + ", train: " + train_time + "s, validation: " + valid_time + "s"
-        epoch_info_2 = "[Train] loss: " + train_loss + ", metric: " + train_metric
+        train_metric = running_model.history['mean_squared_error'][0]
+        epoch_info_1 = "Epoch " + str(epoch_num) + ", train: " + str(train_time) + "s, validation: " + str(valid_time) + "s"
+        epoch_info_2 = "[Train] loss: " + str(train_loss) + ", metric: " + str(train_metric)
         EventIssuer.issueMessage(epoch_info_1, _LOGFILENAME)
         EventIssuer.issueMessage(epoch_info_2, _LOGFILENAME)
 

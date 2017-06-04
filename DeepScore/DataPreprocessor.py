@@ -153,7 +153,7 @@ def randPartition(alldata_X, alldata_Y, _FRACTION):
     dataX = alldata_X[indices]
     dataY = alldata_Y[indices]
 
-    partition_index = dataX.shape[0] * _FRACTION
+    partition_index = int(dataX.shape[0] * _FRACTION)
 
     trainX = dataX[0:partition_index]
     testX = dataX[partition_index:dataX.shape[0]]

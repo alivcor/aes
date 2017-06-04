@@ -55,9 +55,13 @@ def issueSleep(text, logfilename, ifBold=False):
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
-def issueSharpAlert(text, logfilename):
-    toprint = "{.BOLD}(DeepScore Engine){.END}" + " : " + text
-    print toprint.format(bcolors, bcolors)
+def issueSharpAlert(text, logfilename, highlight=False):
+    if highlight:
+        toprint = "{.BOLD}(DeepScore Engine)" + " : " + text + "{.END}"
+        print toprint.format(bcolors, bcolors)
+    else:
+        toprint = "{.BOLD}(DeepScore Engine){.END}" + " : " + text
+        print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 

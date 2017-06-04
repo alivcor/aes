@@ -21,16 +21,16 @@ class AnalyzerObject:
 
     def analyze(self):
         EventIssuer.issueMessage("Analyzer is evaluating over validation set..", self.log_fn)
-        self.dev_loss, self.dev_metric = self.model.evaluate(self.dev_X, self.dev_Y, batch_size=self.batch_size, verbose=1)
+        self.dev_loss, self.dev_metric = self.model.evaluate(self.dev_X, self.dev_Y, batch_size=self.batch_size, verbose=0)
         dev_pred = self.model.predict(self.dev_X, batch_size=self.batch_size).squeeze()
         self.qwk, self.lwk = calculate_kappa(self.dev_Y, dev_pred)
         EventIssuer.issueSharpAlert("[VALIDATION] : QWK : " + str(self.qwk) + " | LWK : " + str(self.lwk), self.log_fn)
 
 
 
+
 def calculate_kappa(y_true, y_pred):
-    print y_true, y_pred
-    print y_true.shape[0], y_pred.shape[0]
+    # print y_true.shape[0], y_pred.shape[0]
     assert(y_true.shape[0] == y_pred.shape[0])
 
     decoded_y_true = np.zeros(y_true.shape[0])
@@ -38,14 +38,18 @@ def calculate_kappa(y_true, y_pred):
     for i in range(0, y_true.shape[0]):
         decoded_y_true[i] = decodeOneHot(y_true[i])
         decoded_y_pred[i] = decodeOneHot(y_pred[i])
-    qwk_value = DeepScore_Metrics.quadratic_weighted_kappa(decoded_y_true, decoded_y_pred)
-    lwk_value = DeepScore_Metrics.linear_weighted_kappa(decoded_y_true, decoded_y_pred)
+    decoded_y_pred = [int(i) for i in decoded_y_pred]
+    decoded_y_true = [int(i) for i in decoded_y_true]
+    # print decoded_y_true
+    # print decoded_y_pred
+    qwk_value = DeepScore_Metrics.quadratic_weighted_kappa(decoded_y_true, decoded_y_pred, 0, 12)
+    lwk_value = DeepScore_Metrics.linear_weighted_kappa(decoded_y_true, decoded_y_pred, 0, 12)
     return qwk_value, lwk_value
 
 
 
 def decodeOneHot(rating_array):
-    return rating_array.index(1)
+    return np.argmax(rating_array)
 
 
 
