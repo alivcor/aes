@@ -221,7 +221,10 @@ def traintest_model():
 
         # Evaluate
         start_time = time()
-        Analyzer.analyze(model, _LOGFILENAME)
+
+        analyzer_object = Analyzer.AnalyzerObject(model, _LOGFILENAME, dev_X, dev_Y, epoch_num)
+        analyzer_object.analyze()
+
         valid_time = time() - start_time
         total_valid_time += valid_time
 
