@@ -176,7 +176,7 @@ def testModel(model_fn=None):
     scores = model.evaluate(test_X, test_Y)
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
 
-    EventIssuer.issueSuccess("The essays has been graded. ", _LOGFILENAME, ifBold=True)
+    EventIssuer.issueSuccess("The essays have been graded. ", _LOGFILENAME, ifBold=True)
 
 
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
