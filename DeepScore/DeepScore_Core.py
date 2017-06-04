@@ -182,67 +182,53 @@ def testModel(model_fn=None):
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
 
-def decodeOneHot(rating_array):
-    return rating_array.index(1)
-
-
-def qw_kappa(y_true, y_pred):
-    print y_true, y_pred
-    print y_true.shape[0], y_pred.shape[0]
-    assert(y_true.shape[0] == y_pred.shape[0])
-
-    decoded_y_true = np.zeros(y_true.shape[0])
-    decoded_y_pred = np.zeros(y_pred.shape[0])
-    for i in range(0, y_true.shape[0]):
-        decoded_y_true[i] = decodeOneHot(y_true[i])
-        decoded_y_pred[i] = decodeOneHot(y_pred[i])
-    qwk_value = DeepScore_Metrics.quadratic_weighted_kappa(decoded_y_true, decoded_y_pred)
-    return qwk_value
-
-
-
 
 
 def traintest_model():
     _LOGFILENAME, timestamp = start_deepscore_core()
     EventIssuer.issueMessage("Training a new model", _LOGFILENAME)
+
+    # Load Data
     X, Y = loadppData('ppData/X_1492930578.7.ds', 'ppData/Y_1492930578.7.ds')
     # print X.shape, Y.shape
     # split into input (X) and output (Y) variables
 
+    # Partition into train and test
     train_X, train_Y, dev_X, dev_Y, test_X, test_Y = DataPreprocessor.partitionDataset(X, Y)
+    EventIssuer.issueMessage("Training Set Size : " + train_X.shape[0] + " | Validation Set Size : " + dev_X.shape[0] + " | Test Set Size : " + test_X.shape[0], _LOGFILENAME)
 
-    print train_X.shape, train_Y.shape, test_X.shape, test_Y.shape
+    # Create Model
     model = Sequential()
     model.add(Dense(12, input_dim=300, activation='relu'))
     model.add(Dense(8, activation='tanh'))
     model.add(Dense(8, activation='relu'))
     model.add(Dense(13, activation='softmax'))
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', qw_kappa])
+
+    # Compile Model
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     # Train
-
     total_train_time = 0
-    total_eval_time = 0
+    total_valid_time = 0
 
     for epoch_num in range(200):
         # Training
-        t0 = time()
-        train_history = model.fit(train_X, train_Y, batch_size=10, nb_epoch=1, verbose=0)
-        tr_time = time() - t0
-        total_train_time += tr_time
+        start_time = time()
+        running_model = model.fit(train_X, train_Y, batch_size=10, nb_epoch=1, verbose=0)
+        train_time = time() - start_time
+        total_train_time += train_time
 
         # Evaluate
-        t0 = time()
+        start_time = time()
         Analyzer.analyze(model, _LOGFILENAME)
-        evl_time = time() - t0
-        total_eval_time += evl_time
+        valid_time = time() - start_time
+        total_valid_time += valid_time
 
         # Issue events
-        train_loss = train_history.history['loss'][0]
-        train_metric = train_history.history['accuracy'][0]
-        epoch_info_1 = "Epoch " + epoch_num + ", train: " + tr_time + "s, evaluation: " + evl_time + "s"
+        train_loss = running_model.history['loss'][0]
+        train_metric = running_model.history['accuracy'][0]
+        epoch_info_1 = "Epoch " + epoch_num + ", train: " + train_time + "s, validation: " + valid_time + "s"
         epoch_info_2 = "[Train] loss: " + train_loss + ", metric: " + train_metric
         EventIssuer.issueMessage(epoch_info_1, _LOGFILENAME)
         EventIssuer.issueMessage(epoch_info_2, _LOGFILENAME)
