@@ -212,7 +212,7 @@ def traintest_model():
 
     model.add(Dense(12, input_dim=300, use_bias=True))
     model.add(Dense(32, activation='tanh', use_bias=True))
-    model.add(Dense(32, activation='tanh', use_bias=True))
+    model.add(Dense(8, activation='tanh', use_bias=True))
     model.add(Dense(13, activation='softmax', use_bias=True))
     # #
     # model = Sequential()
