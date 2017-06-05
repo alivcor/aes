@@ -209,9 +209,9 @@ def traintest_model():
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='tanh'))
-    model.add(Dense(20, activation='tanh'))
-    model.add(Dense(13, activation='softmax'))
+    model.add(Dense(12, input_dim=300, activation='tanh', use_bias=True))
+    model.add(Dense(32, activation='tanh', use_bias=True))
+    model.add(Dense(13, activation='softmax', use_bias=True))
     # #
     # model = Sequential()
     # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
@@ -227,7 +227,7 @@ def traintest_model():
     adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.0000001))
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.000001))
 
     # Train
     total_train_time = 0
