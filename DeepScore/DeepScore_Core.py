@@ -224,10 +224,10 @@ def traintest_model():
     # model.add(Dense(8, activation='relu'))
     # model.add(Dense(13, activation='softmax'))
 
-    adam = optimizers.Adam(lr=0.0001, epsilon=1e-08)
+    adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.0001))
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'])
 
     # Train
     total_train_time = 0
