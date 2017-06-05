@@ -238,7 +238,7 @@ def traintest_model():
     for epoch_num in range(1000):
         # Training
         start_time = time.time()
-        running_model = model.fit(train_X, train_Y, batch_size=50, epochs=1, verbose=0)
+        running_model = model.fit(train_X, train_Y, batch_size=180, epochs=1, verbose=0)
         train_time = time.time() - start_time
         total_train_time += train_time
 
