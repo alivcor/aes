@@ -165,6 +165,6 @@ def randPartition(alldata_X, alldata_Y, _FRACTION):
 
 
 def partitionDataset(X, Y):
-    trainX, trainY, testX, testY = randPartition(X, Y, 0.80)
-    trainX, trainY, devX, devY = randPartition(trainX, trainY, 0.80)
+    trainX, trainY, testX, testY = randPartition(X, Y, 0.90)
+    trainX, trainY, devX, devY = randPartition(trainX, trainY, 0.90)
     return trainX, trainY, devX, devY, testX, testY

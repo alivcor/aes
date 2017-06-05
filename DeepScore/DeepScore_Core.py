@@ -209,7 +209,7 @@ def traintest_model():
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='tanh', trainable=True))
+    model.add(Dense(12, input_dim=300, activation='tanh'))
     model.add(Dense(8, activation='tanh'))
     model.add(Dense(13, activation='softmax'))
     # #
@@ -224,10 +224,10 @@ def traintest_model():
     # model.add(Dense(8, activation='relu'))
     # model.add(Dense(13, activation='softmax'))
 
-    adam = optimizers.Adam(lr=0.02)
+    adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_absolute_error'], kernel_regularizer=regularizers.l2(0.0001))
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.0001))
 
     # Train
     total_train_time = 0
@@ -238,7 +238,7 @@ def traintest_model():
     for epoch_num in range(1000):
         # Training
         start_time = time.time()
-        running_model = model.fit(train_X, train_Y, batch_size=20, epochs=1, verbose=0)
+        running_model = model.fit(train_X, train_Y, batch_size=50, epochs=1, verbose=0)
         train_time = time.time() - start_time
         total_train_time += train_time
 
@@ -260,7 +260,7 @@ def traintest_model():
 
         # Issue events
         train_loss = running_model.history['loss'][0]
-        train_metric = running_model.history['mean_absolute_error'][0]
+        train_metric = running_model.history['mean_squared_error'][0]
         epoch_info_1 = "Epoch " + str(epoch_num) + ", train: " + str(train_time) + "s, validation: " + str(valid_time) + "s"
         epoch_info_2 = "[Train] loss: " + str(train_loss) + ", metric: " + str(train_metric)
         EventIssuer.issueMessage(epoch_info_1, _LOGFILENAME)
