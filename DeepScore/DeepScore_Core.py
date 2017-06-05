@@ -209,9 +209,9 @@ def traintest_model():
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.001)))
-    model.add(Dense(8, activation='tanh', kernel_regularizer=regularizers.l2(0.001)))
-    model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
+    model.add(Dense(50, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
+    model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.0001)))
     #
     # model = Sequential()
     # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
