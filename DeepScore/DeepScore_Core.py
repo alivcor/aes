@@ -210,7 +210,7 @@ def traintest_model():
     # Create Model
     model = Sequential()
     model.add(Dense(12, input_dim=300, activation='tanh'))
-    model.add(Dense(8, activation='tanh'))
+    model.add(Dense(18, activation='tanh'))
     model.add(Dense(13, activation='softmax'))
     # #
     # model = Sequential()
