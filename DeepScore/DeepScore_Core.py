@@ -218,34 +218,43 @@ def traintest_model():
     # model.add(Activation('tanh'))
     # model.add(Dense(13, activation='softmax'))
 
-    adam = optimizers.Adam(lr=0.0002, epsilon=1e-08)
+    adam = optimizers.Adam(lr=0.002, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'])
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_absolute_error'])
 
     # Train
     total_train_time = 0
     total_valid_time = 0
 
+    best_qwk = -1
+    argmax_best_qwk = 0
     for epoch_num in range(1000):
         # Training
         start_time = time.time()
-        running_model = model.fit(train_X, train_Y, batch_size=20, epochs=1, verbose=0)
+        running_model = model.fit(train_X, train_Y, batch_size=50, epochs=1, verbose=0)
         train_time = time.time() - start_time
         total_train_time += train_time
 
         # Evaluate
         start_time = time.time()
 
-        analyzer_object = Analyzer.AnalyzerObject(model, _LOGFILENAME, dev_X, dev_Y, epoch_num, 20)
+        analyzer_object = Analyzer.AnalyzerObject(model, _LOGFILENAME, dev_X, dev_Y, epoch_num, dev_X.shape[0])
         analyzer_object.analyze()
+
+        if(analyzer_object.qwk > best_qwk):
+            best_qwk = analyzer_object.qwk
+            best_lwk = analyzer_object.lwk
+            argmax_best_qwk = epoch_num
+            EventIssuer.issueSuccess("Best QWK seen so far : " + str(best_qwk), _LOGFILENAME, highlight=True)
 
         valid_time = time.time() - start_time
         total_valid_time += valid_time
 
+
         # Issue events
         train_loss = running_model.history['loss'][0]
-        train_metric = running_model.history['mean_squared_error'][0]
+        train_metric = running_model.history['mean_absolute_error'][0]
         epoch_info_1 = "Epoch " + str(epoch_num) + ", train: " + str(train_time) + "s, validation: " + str(valid_time) + "s"
         epoch_info_2 = "[Train] loss: " + str(train_loss) + ", metric: " + str(train_metric)
         EventIssuer.issueMessage(epoch_info_1, _LOGFILENAME)
@@ -259,10 +268,11 @@ def traintest_model():
 
     scores = model.evaluate(test_X, test_Y)
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    EventIssuer.issueSuccess("Best : QWK = " + str(best_qwk) + " | LWK = " + str(best_lwk) + " at Epoch " + str(argmax_best_qwk), _LOGFILENAME, highlight=True)
 
     EventIssuer.issueExit(_LOGFILENAME, timestamp)
 
-    testModel(timestamp)
+    # testModel(timestamp)
 
 
 

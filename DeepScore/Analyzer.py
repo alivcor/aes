@@ -26,7 +26,7 @@ class AnalyzerObject:
         dev_pred = self.model.predict(self.dev_X, batch_size=self.batch_size).squeeze()
         self.qwk, self.lwk = calculate_kappa(self.dev_Y, dev_pred)
         print ""
-        EventIssuer.issueSharpAlert("[VALIDATION] : QWK : " + str(self.qwk) + " | LWK : " + str(self.lwk), self.log_fn, highlight=True)
+        EventIssuer.issueMessage("[VALIDATION] : QWK : " + str(self.qwk) + " | LWK : " + str(self.lwk), self.log_fn)
 
 
 
@@ -44,8 +44,8 @@ def calculate_kappa(y_true, y_pred):
     decoded_y_true = [int(i) for i in decoded_y_true]
     # print decoded_y_true
     # print decoded_y_pred
-    qwk_value = DeepScore_Metrics.quadratic_weighted_kappa(decoded_y_true, decoded_y_pred, 2, 12)
-    lwk_value = DeepScore_Metrics.linear_weighted_kappa(decoded_y_true, decoded_y_pred, 2, 12)
+    qwk_value = DeepScore_Metrics.quadratic_weighted_kappa(decoded_y_true, decoded_y_pred, 0, 12)
+    lwk_value = DeepScore_Metrics.linear_weighted_kappa(decoded_y_true, decoded_y_pred, 0, 12)
     return qwk_value, lwk_value
 
 

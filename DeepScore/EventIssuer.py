@@ -89,13 +89,17 @@ def issueWelcome(logfilename):
     toprint = "{.BLUE}{.BOLD}(DeepScore Engine){.END}" + " : " + "Welcome to DeepScore v0.1"
     print toprint.format(bcolors, bcolors, bcolors)
 
-def issueSuccess(text, logfilename, ifBold=False):
-    if ifBold:
-        toprint = "{.LIME}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+def issueSuccess(text, logfilename, ifBold=False, highlight=False):
+    if highlight:
+        toprint = "{.LIME}{.BOLD}(DeepScore Engine)" + " : " + text + "{.END}"
         print toprint.format(bcolors, bcolors, bcolors)
     else:
-        toprint = "{.LIME}(DeepScore Engine){.END}" + " : " + text
-        print toprint.format(bcolors, bcolors)
+        if ifBold:
+            toprint = "{.LIME}{.BOLD}(DeepScore Engine){.END}" + " : " + text
+            print toprint.format(bcolors, bcolors, bcolors)
+        else:
+            toprint = "{.LIME}(DeepScore Engine){.END}" + " : " + text
+            print toprint.format(bcolors, bcolors)
     with open(logfilename, 'a') as f:
         f.write("\n(DeepScore Engine) : " + text)
 
