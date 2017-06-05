@@ -227,7 +227,7 @@ def traintest_model():
     adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
-    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.000001))
+    model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_squared_error'], kernel_regularizer=regularizers.l2(0.0000001))
 
     # Train
     total_train_time = 0
