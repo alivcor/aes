@@ -208,23 +208,23 @@ def traintest_model():
     EventIssuer.issueMessage("Training Set Size : " + str(train_X.shape[0]) + " | Validation Set Size : " + str(dev_X.shape[0]) + " | Test Set Size : " + str(test_X.shape[0]), _LOGFILENAME)
 
     # Create Model
-    # model = Sequential()
-    # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
-    # model.add(Dense(8, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
-    # model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.0001)))
+    model = Sequential()
+    model.add(Dense(12, input_dim=300, activation='tanh', trainable=True))
+    model.add(Dense(8, activation='tanh'))
+    model.add(Dense(13, activation='softmax'))
     # #
     # model = Sequential()
     # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
     # model.add(Activation('tanh'))
     # model.add(Dense(13, activation='softmax'))
+    #
+    # model = Sequential()
+    # model.add(Dense(12, input_dim=300, activation='relu'))
+    # model.add(Dense(8, activation='tanh'))
+    # model.add(Dense(8, activation='relu'))
+    # model.add(Dense(13, activation='softmax'))
 
-    model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='relu'))
-    model.add(Dense(8, activation='tanh'))
-    model.add(Dense(8, activation='relu'))
-    model.add(Dense(13, activation='softmax'))
-
-    adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
+    adam = optimizers.Adam(lr=0.02)
 
     # Compile Model
     model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_absolute_error'], kernel_regularizer=regularizers.l2(0.0001))
