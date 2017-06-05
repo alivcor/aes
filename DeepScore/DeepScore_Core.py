@@ -218,7 +218,7 @@ def traintest_model():
     # model.add(Activation('tanh'))
     # model.add(Dense(13, activation='softmax'))
 
-    adam = optimizers.Adam(lr=0.0001, epsilon=1e-08)
+    adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
     model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_absolute_error'])
