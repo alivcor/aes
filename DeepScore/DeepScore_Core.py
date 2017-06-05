@@ -209,16 +209,16 @@ def traintest_model():
 
     # Create Model
     model = Sequential()
-    model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
-    model.add(Dense(8, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
-    model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.0001)))
+    model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.001)))
+    model.add(Dense(8, activation='tanh', kernel_regularizer=regularizers.l2(0.001)))
+    model.add(Dense(13, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
     #
     # model = Sequential()
     # model.add(Dense(12, input_dim=300, activation='tanh', kernel_regularizer=regularizers.l2(0.0001)))
     # model.add(Activation('tanh'))
     # model.add(Dense(13, activation='softmax'))
 
-    adam = optimizers.Adam(lr=0.05, epsilon=1e-08)
+    adam = optimizers.Adam(lr=0.02, epsilon=1e-08)
 
     # Compile Model
     model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['mean_absolute_error'])
