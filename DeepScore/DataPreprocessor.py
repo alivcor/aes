@@ -11,8 +11,8 @@ import EventIssuer
 import csv
 import sys
 from nltk import word_tokenize
-from keras.models import Sequential
-from keras.layers import Dense
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 import numpy as np
 # fix random seed for reproducibility
 import pickle
@@ -162,6 +162,76 @@ def randPartition(alldata_X, alldata_Y, _FRACTION):
     testY = dataY[partition_index:dataY.shape[0]]
 
     return [trainX, trainY, testX, testY]
+
+
+def optimize_elbow(data, icn, visualize=False):
+    num_clusters = icn
+    plt.ion()
+    sse_list = []
+    nc_list = []
+    k_means_list = []
+    if(visualize):
+        while(num_clusters <= 15):
+            k_means = KMeans(n_clusters=num_clusters).fit(data)
+            k_means_list.append(k_means)
+            clusters_counts = {}
+            clusters = {}
+            point_index = 0
+            for point in k_means.labels_:
+                try:
+                    clusters_counts[point] += 1
+                    clusters[point].append(point_index)
+                except KeyError:
+                    clusters_counts[point] = 1
+                    clusters[point] = [point_index]
+                point_index += 1
+            # GET SUM SQUARED ERROR
+            sum_sq_error = 0
+            for cluster_label in clusters:
+                cluster_mean = k_means.cluster_centers_[cluster_label]
+                for data_point_index in clusters[cluster_label]:
+                    data_point = data[data_point_index]
+                    for findex in xrange(len(data_point)):
+                        sum_sq_error += math.pow(data_point[findex]-cluster_mean[findex], 2)
+            print "SSE at", str(num_clusters), "=", str(sum_sq_error)
+
+            #PLOT / UPDATE THE PLOT FOR SSE
+            sse_list.append(sum_sq_error)
+            nc_list.append(num_clusters)
+            num_clusters += 1
+            plt.plot(nc_list, np.array(sse_list), marker='o', linestyle='--', color='r')
+            plt.pause(0.5)
+    else:
+        k_means = KMeans(n_clusters=5).fit(data)
+        return k_means
+    plt.close()
+    return k_means_list[3]
+
+
+def generate_stratified_samples(data_x, data_y, fraction):
+    k_means = optimize_elbow(data_y, 2, True)
+    clusters_counts = {}
+    clusters = {}
+    point_index = 0
+    for point in k_means.labels_:
+        try:
+            clusters_counts[point] += 1
+            clusters[point].append(point_index)
+        except KeyError:
+            clusters_counts[point] = 1
+            clusters[point] = [point_index]
+        point_index += 1
+    stratified_samples = {}
+    for cluster_label in clusters:
+        sampled_dict_indices = np.random.randint(len(clusters[cluster_label]), size=int(len(clusters[cluster_label]) * fraction))
+        sampled_indices = np.array(clusters[cluster_label])[sampled_dict_indices]
+        print "In Cluster", str(cluster_label), ": Total : ", str(len(clusters[cluster_label])), "| Sampled : ", str(len(sampled_indices))
+        stratified_samples[cluster_label] = data_x[sampled_indices]
+    return stratified_samples
+
+
+def stratifiedPartition(alldata_X, alldata_Y, _FRACTION):
+
 
 
 def partitionDataset(X, Y):
